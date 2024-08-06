@@ -4,31 +4,29 @@ services:
   # ====================
   nats-server:
     image: nats:latest
-    ports:
-      - "8222:8222"
 
   # ====================
   #  Gateway
   # ====================
-  client-api-gateway:
-    build: ./client-gateway
+  client-gateway:
+    build:
+      context: ./client-api-gateway
+      dockerfile: Dockerfile.prod
+    image: client-api-gateway-prod
     ports:
       - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
-    volumes:
-      - ./client-api-gateway/src:/usr/src/app/src
-    command: npm run start:dev
     environment:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
 
   # ====================
-  # Products Microservice
+  # Clients Microservice
   # ====================
   clients-ms:
-    build: ./clients-ms
-    volumes:
-      - ./clients-ms/src:/usr/src/app/src
-    command: npm run start:dev
+    build:
+      context: ./clients-ms
+      dockerfile: Dockerfile.prod
+    image: clients-ms-prod
     environment:
       - PORT=${CLIENT_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
@@ -38,10 +36,10 @@ services:
   # Auth Microservice
   # ====================
   auth-ms:
-    build: ./auth-ms
-    volumes:
-      - ./auth-ms/src:/usr/src/app/src
-    command: npm run start:dev
+    build:
+      context: ./auth-ms
+      dockerfile: Dockerfile.prod
+    image: auth-ms-prod
     environment:
       - PORT=${AUTH_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
