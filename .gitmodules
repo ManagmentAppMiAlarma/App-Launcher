@@ -4,3 +4,6 @@
 [submodule "client-api-gateway"]
 	path = client-api-gateway
 	url = https://github.com/ManagmentAppMiAlarma/client-api-gateway.git
+[submodule "auth-ms"]
+	path = auth-ms
+	url = https://github.com/ManagmentAppMiAlarma/auth-ms.git
