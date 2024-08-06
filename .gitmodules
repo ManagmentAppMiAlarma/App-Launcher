@@ -1,3 +1,6 @@
 [submodule "clients-ms"]
 	path = clients-ms
 	url = https://github.com/ManagmentAppMiAlarma/clients-ms.git
+[submodule "client-api-gateway"]
+	path = client-api-gateway
+	url = https://github.com/ManagmentAppMiAlarma/client-api-gateway.git
