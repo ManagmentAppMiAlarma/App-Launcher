@@ -1,0 +1,3 @@
+[submodule "clients-ms"]
+	path = clients-ms
+	url = https://github.com/ManagmentAppMiAlarma/clients-ms.git
