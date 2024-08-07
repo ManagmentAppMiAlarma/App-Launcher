@@ -11,7 +11,7 @@ services:
   #  Gateway
   # ====================
   client-api-gateway:
-    build: ./client-gateway
+    build: ./client-api-gateway
     ports:
       - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
     volumes:
