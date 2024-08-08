@@ -21,12 +21,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Stopping and Removing containers
-        run: sudo docker compose -f docker-compose.prod.yml down
-      - name: Deleting old images
-        run: sudo docker image rm auth-ms-prod clients-ms-prod client-api-gateway-prod nats
-      - name: Building application
-        run: sudo docker compose -f docker-compose.prod.yml build
-      - name: Deploying application in production
         run: |
           echo "CLIENT_GATEWAY_PORT=${{ secrets.CLIENT_GATEWAY_PORT }}" >> .env
           echo "NATS_SERVERS=${{ secrets.NATS_SERVERS }}" >> .env
@@ -37,4 +31,10 @@ jobs:
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           ls
           cat .env
-          sudo docker compose -f docker-compose.prod.yml --env-file .env up -d
+          sudo docker compose -f docker-compose.prod.yml down
+      - name: Deleting old images
+        run: sudo docker image rm auth-ms-prod clients-ms-prod client-api-gateway-prod nats
+      - name: Building application
+        run: sudo docker compose -f docker-compose.prod.yml build
+      - name: Deploying application in production
+        run: sudo docker compose -f docker-compose.prod.yml --env-file .env up -d
