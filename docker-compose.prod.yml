@@ -10,6 +10,8 @@ services:
   # ====================
   client-api-gateway:
     image: aguekdjian/client-api-gateway-prod
+    depends_on:
+      - nats-server
     ports:
       - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
     environment:
@@ -21,6 +23,8 @@ services:
   # ====================
   clients-ms:
     image: aguekdjian/clients-ms-prod
+    depends_on:
+      - nats-server
     environment:
       - PORT=${CLIENT_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
@@ -31,8 +35,20 @@ services:
   # ====================
   auth-ms:
     image: aguekdjian/auth-ms-prod
+    depends_on:
+      - nats-server
     environment:
       - PORT=${AUTH_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
       - MONGO_AUTH_URL=${MONGO_AUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
+
+  # ====================
+  # Frontend
+  # ====================
+  frontend:
+    image: aguekdjian/frontend
+    depends_on:
+      - client-api-gateway
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
