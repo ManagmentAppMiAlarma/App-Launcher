@@ -24,29 +24,29 @@ services:
   # ====================
   # Clients Microservice
   # ====================
-  # clients-ms:
-  #   build: ./clients-ms
-  #   volumes:
-  #     - ./clients-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=${CLIENT_MS_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
-  #     - MONGO_CLIENT_URL=${MONGO_CLIENT_URL}
+  clients-ms:
+    build: ./clients-ms
+    volumes:
+      - ./clients-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=${CLIENT_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - MONGO_CLIENT_URL=${MONGO_CLIENT_URL}
 
   # ====================
   # Auth Microservice
   # ====================
-  # auth-ms:
-  #   build: ./auth-ms
-  #   volumes:
-  #     - ./auth-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=${AUTH_MS_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
-  #     - MONGO_AUTH_URL=${MONGO_AUTH_URL}
-  #     - JWT_SECRET=${JWT_SECRET}
+  auth-ms:
+    build: ./auth-ms
+    volumes:
+      - ./auth-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=${AUTH_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - MONGO_AUTH_URL=${MONGO_AUTH_URL}
+      - JWT_SECRET=${JWT_SECRET}
 
   # ====================
   # Clients Microservice
