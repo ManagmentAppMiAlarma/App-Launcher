@@ -49,7 +49,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
 
   # ====================
-  # Clients Microservice
+  # Orders Microservice
   # ====================
   orders-ms:
     build: ./orders-ms
