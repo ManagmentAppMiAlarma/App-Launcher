@@ -4,6 +4,8 @@ services:
   # ====================
   nats-server:
     image: nats:latest
+    ports:
+      - "8223:8222"
 
   # ====================
   #  Gateway
@@ -42,6 +44,18 @@ services:
       - NATS_SERVERS=${NATS_SERVERS}
       - MONGO_AUTH_URL=${MONGO_AUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
+
+  # ====================
+  # Auth Microservice
+  # ====================
+  orders-ms:
+    image: aguekdjian/orders-ms-prod
+    depends_on:
+      - nats-server
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - POSGRESQL_ORDERS_URL=${POSGRESQL_ORDERS_URL}
 
   # ====================
   # Frontend
