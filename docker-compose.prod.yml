@@ -4,15 +4,16 @@ services:
   # ====================
   nats-server:
     image: nats:latest
+    ports:
+      - "8223:8222"
 
   # ====================
   #  Gateway
   # ====================
   client-api-gateway:
-    build:
-      context: ./client-api-gateway
-      dockerfile: Dockerfile.prod
-    image: client-api-gateway-prod
+    image: aguekdjian/client-api-gateway-prod
+    depends_on:
+      - nats-server
     ports:
       - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
     environment:
@@ -23,10 +24,9 @@ services:
   # Clients Microservice
   # ====================
   clients-ms:
-    build:
-      context: ./clients-ms
-      dockerfile: Dockerfile.prod
-    image: clients-ms-prod
+    image: aguekdjian/clients-ms-prod
+    depends_on:
+      - nats-server
     environment:
       - PORT=${CLIENT_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
@@ -36,12 +36,33 @@ services:
   # Auth Microservice
   # ====================
   auth-ms:
-    build:
-      context: ./auth-ms
-      dockerfile: Dockerfile.prod
-    image: auth-ms-prod
+    image: aguekdjian/auth-ms-prod
+    depends_on:
+      - nats-server
     environment:
       - PORT=${AUTH_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
       - MONGO_AUTH_URL=${MONGO_AUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
+
+  # ====================
+  # Auth Microservice
+  # ====================
+  orders-ms:
+    image: aguekdjian/orders-ms-prod
+    depends_on:
+      - nats-server
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - POSGRESQL_ORDERS_URL=${POSGRESQL_ORDERS_URL}
+
+  # ====================
+  # Frontend
+  # ====================
+  # frontend:
+  #   image: aguekdjian/frontend
+  #   depends_on:
+  #     - client-api-gateway
+  #   ports:
+  #     - ${FRONTEND_PORT}:${FRONTEND_PORT}

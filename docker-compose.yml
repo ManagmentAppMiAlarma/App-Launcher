@@ -22,7 +22,7 @@ services:
       - NATS_SERVERS=${NATS_SERVERS}
 
   # ====================
-  # Products Microservice
+  # Clients Microservice
   # ====================
   clients-ms:
     build: ./clients-ms
@@ -47,3 +47,16 @@ services:
       - NATS_SERVERS=${NATS_SERVERS}
       - MONGO_AUTH_URL=${MONGO_AUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
+
+  # ====================
+  # Orders Microservice
+  # ====================
+  orders-ms:
+    build: ./orders-ms
+    volumes:
+      - ./orders-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - POSGRESQL_ORDERS_URL=${POSGRESQL_ORDERS_URL}
