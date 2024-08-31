@@ -1,7 +1,7 @@
 name: CI/CD Pipeline
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
@@ -19,11 +19,11 @@ jobs:
     needs: avoid_redundancy
     steps:
       - name: Checkout repository and submodules
-        # uses: actions/checkout@v3
-        run: pwd && ls -la
-        # with:
-        #   token: ${{ secrets.GITHUB_TOKEN }}
-        #   submodules: true
+        uses: actions/checkout@v3
+        # run: pwd && ls -la
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: 'recursive'
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
