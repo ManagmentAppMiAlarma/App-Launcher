@@ -35,6 +35,18 @@ jobs:
           git submodule update --init --recursive --remote -f
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Creating .env file
+        run: |
+          echo "CLIENT_GATEWAY_PORT=${{ secrets.CLIENT_GATEWAY_PORT }}" >> .env
+          echo "NATS_SERVERS=${{ secrets.NATS_SERVERS }}" >> .env
+          echo "CLIENT_MS_PORT=${{ secrets.CLIENT_MS_PORT }}" >> .env
+          echo "MONGO_CLIENT_URL=${{ secrets.MONGO_CLIENT_URL }}" >> .env
+          echo "AUTH_MS_PORT=${{ secrets.AUTH_MS_PORT }}" >> .env
+          echo "MONGO_AUTH_URL=${{ secrets.MONGO_AUTH_URL }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "ORDERS_MS_PORT=${{ secrets.ORDERS_MS_PORT }}" >> .env
+          echo "POSGRESQL_ORDERS_URL=${{ secrets.POSGRESQL_ORDERS_URL }}" >> .env
+          echo "FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}" >> .env
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
       - name: Build Docker images
@@ -66,15 +78,4 @@ jobs:
           docker rmi aguekdjian/orders-ms-prod
           docker rmi aguekdjian/frontend
       - name: Start Docker Compose with new images
-        env:
-          CLIENT_GATEWAY_PORT: ${{ secrets.CLIENT_GATEWAY_PORT }}
-          NATS_SERVERS: ${{ secrets.NATS_SERVERS }}
-          CLIENT_MS_PORT: ${{ secrets.CLIENT_MS_PORT }}
-          MONGO_CLIENT_URL: ${{ secrets.MONGO_CLIENT_URL }}
-          AUTH_MS_PORT: ${{ secrets.AUTH_MS_PORT }}
-          MONGO_AUTH_URL: ${{ secrets.MONGO_AUTH_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          ORDERS_MS_PORT: ${{ secrets.ORDERS_MS_PORT }}
-          POSGRESQL_ORDERS_URL: ${{ secrets.POSGRESQL_ORDERS_URL }}
-          FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
         run: docker compose -f docker-compose.prod.yml up -d
