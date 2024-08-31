@@ -56,10 +56,6 @@ jobs:
     runs-on: aws-ec2-mialarma-app
     needs: build
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - name: Stop Docker Compose
         run: docker compose -f docker-compose.prod.yml down
       - name: Remove old Docker images
