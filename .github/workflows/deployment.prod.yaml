@@ -69,13 +69,13 @@ jobs:
     needs: build
     steps:
       - name: Stop Docker Compose
-        run: docker compose -f docker-compose.prod.yml down
+        run: sudo docker compose -f docker-compose.prod.yml down
       - name: Remove old Docker images
         run: |
-          docker rmi aguekdjian/client-api-gateway-prod
-          docker rmi aguekdjian/clients-ms-prod
-          docker rmi aguekdjian/auth-ms-prod
-          docker rmi aguekdjian/orders-ms-prod
-          docker rmi aguekdjian/frontend
+          sudo docker rmi aguekdjian/client-api-gateway-prod
+          sudo docker rmi aguekdjian/clients-ms-prod
+          sudo docker rmi aguekdjian/auth-ms-prod
+          sudo docker rmi aguekdjian/orders-ms-prod
+          sudo docker rmi aguekdjian/frontend
       - name: Start Docker Compose with new images
-        run: docker compose -f docker-compose.prod.yml up -d
+        run: sudo docker compose -f docker-compose.prod.yml up -d
