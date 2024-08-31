@@ -17,17 +17,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: avoid_redundancy
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository and submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         # run: pwd && ls -la
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: 'recursive'
-
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          submodules: recursive
+      - name: Authorize Git
+        run: |
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "$GITHUB_ACTOR"
+      - name: Update submodules
+        run: |
+          git submodule update --init --recursive --remote -f
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-
       - name: Build Docker images
         run: |
           docker build -f client-api-gateway/Dockerfile.prod -t aguekdjian/client-api-gateway-prod ./client-api-gateway
