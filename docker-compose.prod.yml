@@ -60,9 +60,9 @@ services:
   # ====================
   # Frontend
   # ====================
-  # frontend:
-  #   image: aguekdjian/frontend
-  #   depends_on:
-  #     - client-api-gateway
-  #   ports:
-  #     - ${FRONTEND_PORT}:${FRONTEND_PORT}
+  frontend:
+    image: aguekdjian/frontend
+    depends_on:
+      - client-api-gateway
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
