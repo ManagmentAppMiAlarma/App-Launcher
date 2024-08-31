@@ -22,8 +22,8 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository and submodules
+
         uses: actions/checkout@v4
-        # run: pwd && ls -la
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           submodules: recursive
