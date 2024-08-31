@@ -1,24 +1,74 @@
-name: EC2 Production Deployment
+name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   avoid_redundancy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Redundant Deployments
         uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{github.token}}
 
-  deploy:
+  build:
+    runs-on: ubuntu-latest
     needs: avoid_redundancy
-    runs-on: aws-ec2-mialarma-app
     steps:
-      - uses: actions/checkout@v4.1.7
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-      - name: Stopping and Removing containers
-        run: cd
+          submodules: recursive
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker images
+        run: |
+          docker build -f client-api-gateway/Dockerfile.prod -t aguekdjian/client-api-gateway-prod ./client-api-gateway
+          docker build -f clients-ms/Dockerfile.prod -t aguekdjian/clients-ms-prod ./clients-ms
+          docker build -f auth-ms/Dockerfile.prod -t aguekdjian/auth-ms-prod ./auth-ms
+          docker build -f orders-ms/Dockerfile.prod -t aguekdjian/orders-ms-prod ./orders-ms
+          docker build -f Frontend-App/Dockerfile.prod -t aguekdjian/frontend ./Frontend-App
+
+      - name: Push Docker images to Docker Hub
+        run: |
+          docker push aguekdjian/client-api-gateway-prod
+          docker push aguekdjian/clients-ms-prod
+          docker push aguekdjian/auth-ms-prod
+          docker push aguekdjian/orders-ms-prod
+          docker push aguekdjian/frontend
+
+  deploy:
+    runs-on: aws-ec2-mialarma-app
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Stop Docker Compose
+        run: docker-compose -f docker-compose.prod.yml down
+      - name: Remove old Docker images
+        run: |
+          docker rmi aguekdjian/client-api-gateway-prod
+          docker rmi aguekdjian/clients-ms-prod
+          docker rmi aguekdjian/auth-ms-prod
+          docker rmi aguekdjian/orders-ms-prod
+          docker rmi aguekdjian/frontend
+      - name: Start Docker Compose with new images
+        env:
+          CLIENT_GATEWAY_PORT: ${{ secrets.CLIENT_GATEWAY_PORT }}
+          NATS_SERVERS: ${{ secrets.NATS_SERVERS }}
+          CLIENT_MS_PORT: ${{ secrets.CLIENT_MS_PORT }}
+          MONGO_CLIENT_URL: ${{ secrets.MONGO_CLIENT_URL }}
+          AUTH_MS_PORT: ${{ secrets.AUTH_MS_PORT }}
+          MONGO_AUTH_URL: ${{ secrets.MONGO_AUTH_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ORDERS_MS_PORT: ${{ secrets.ORDERS_MS_PORT }}
+          POSGRESQL_ORDERS_URL: ${{ secrets.POSGRESQL_ORDERS_URL }}
+          FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
+        run: docker-compose -f docker-compose.prod.yml up -d
