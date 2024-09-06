@@ -58,7 +58,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
 
   # ====================
-  # Auth Microservice
+  # Orders Microservice
   # ====================
   orders-ms:
     image: aguekdjian/orders-ms-prod
@@ -74,13 +74,16 @@ services:
   # ====================
   # Frontend
   # ====================
-  frontend:
-    image: aguekdjian/frontend
-    depends_on:
-      - client-api-gateway
-    ports:
-      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+  # frontend:
+  #   image: aguekdjian/frontend
+  #   depends_on:
+  #     - client-api-gateway
+  #   ports:
+  #     - ${FRONTEND_PORT}:${FRONTEND_PORT}
 
+  # ====================
+  # Prometheus
+  # ====================
   prometheus:
     image: prom/prometheus
     ports:
@@ -92,6 +95,9 @@ services:
     depends_on:
       - client-api-gateway
 
+  # ====================
+  # Grafana
+  # ====================
   grafana:
     image: grafana/grafana
     ports:
