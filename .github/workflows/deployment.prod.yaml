@@ -67,8 +67,6 @@ jobs:
     runs-on: aws-ec2-mialarma-app
     needs: [avoid_redundancy, build]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
       - name: Stop Docker Compose
         run: sudo docker compose -f docker-compose.prod.yml down
       - name: Remove old Docker images
