@@ -19,66 +19,66 @@ services:
   # ====================
   #  Gateway
   # ====================
-  # client-api-gateway:
-  #   build:
-  #     context: ./client-api-gateway
-  #     dockerfile: Dockerfile.prod
-  #   depends_on:
-  #     - nats
-  #   ports:
-  #     - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
-  #   environment:
-  #     - PORT=${CLIENT_GATEWAY_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
+  client-api-gateway:
+    build:
+      context: ./client-api-gateway
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - nats
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
+    environment:
+      - PORT=${CLIENT_GATEWAY_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
 
   # ====================
   # Clients Microservice
   # ====================
-  # clients-ms:
-  #   build:
-  #     context: ./clients-ms
-  #     dockerfile: Dockerfile.prod
-  #   depends_on:
-  #     - nats
-  #   ports:
-  #     - ${CLIENT_MS_METRICS_PORT}:${CLIENT_MS_METRICS_PORT}
-  #   environment:
-  #     - PORT=${CLIENT_MS_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
-  #     - MONGO_CLIENT_URL=${MONGO_CLIENT_URL}
+  clients-ms:
+    build:
+      context: ./clients-ms
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - nats
+    ports:
+      - ${CLIENT_MS_METRICS_PORT}:${CLIENT_MS_METRICS_PORT}
+    environment:
+      - PORT=${CLIENT_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - MONGO_CLIENT_URL=${MONGO_CLIENT_URL}
 
   # ====================
   # Auth Microservice
   # ====================
-  # auth-ms:
-  #   build:
-  #     context: ./auth-ms
-  #     dockerfile: Dockerfile.prod
-  #   depends_on:
-  #     - nats
-  #   ports:
-  #     - ${AUTH_MS_METRICS_PORT}:${AUTH_MS_METRICS_PORT}
-  #   environment:
-  #     - PORT=${AUTH_MS_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
-  #     - MONGO_AUTH_URL=${MONGO_AUTH_URL}
-  #     - JWT_SECRET=${JWT_SECRET}
+  auth-ms:
+    build:
+      context: ./auth-ms
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - nats
+    ports:
+      - ${AUTH_MS_METRICS_PORT}:${AUTH_MS_METRICS_PORT}
+    environment:
+      - PORT=${AUTH_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - MONGO_AUTH_URL=${MONGO_AUTH_URL}
+      - JWT_SECRET=${JWT_SECRET}
 
   # ====================
   # Orders Microservice
   # ====================
-  # orders-ms:
-  #   build:
-  #     context: ./orders-ms
-  #     dockerfile: Dockerfile.prod
-  #   depends_on:
-  #     - nats
-  #   ports:
-  #     - ${ORDERS_MS_METRICS_PORT}:${ORDERS_MS_METRICS_PORT}
-  #   environment:
-  #     - PORT=${ORDERS_MS_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
-  #     - POSGRESQL_ORDERS_URL=${POSGRESQL_ORDERS_URL}
+  orders-ms:
+    build:
+      context: ./orders-ms
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - nats
+    ports:
+      - ${ORDERS_MS_METRICS_PORT}:${ORDERS_MS_METRICS_PORT}
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - MONGO_ORDERS_URL=${MONGO_ORDERS_URL}
 
   # ====================
   # Frontend
@@ -93,30 +93,30 @@ services:
   # ====================
   # Prometheus
   # ====================
-  # prometheus:
-  #   image: prom/prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   container_name: prometheus
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
-  #   depends_on:
-  #     - client-api-gateway
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - client-api-gateway
 
   # # ====================
   # # Grafana
   # # ====================
-  # grafana:
-  #   image: grafana/grafana
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - prometheus
-  #   container_name: grafana
-  #   restart: unless-stopped
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-  #     - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-  #   volumes:
-  #     - ./grafana:/etc/grafana/provisioning/datasources
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
