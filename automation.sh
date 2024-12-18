@@ -27,7 +27,7 @@ print_message() {
 }
 
 check_tools(){
-    if command -v $1 &>/dev/null; then 
+    if command -v $2 $1 &>/dev/null; then 
         print_message $GREEN "$1 está instalado."
     else 
         print_message $RED "$1 no está instalado. Por favor, instale $1 e intente nuevamente."
@@ -35,7 +35,7 @@ check_tools(){
     fi
 }
 
-check_tools docker
+check_tools docker sudo
 
 #crear variables de entorno
 print_message $YELLOW "Creando Envs..."
@@ -45,7 +45,7 @@ echo "VITE_PORT=$VITE_PORT" >> .env
 #eliminar antiguos contenedores en ejecucion
 print_message $YELLOW "Eliminando contenedores antiguos..."
 docker compose down &>/dev/null || true
-docker rmi $DOCKER_IMAGE
+sudo docker rmi $DOCKER_IMAGE
 
 ####leer version de la aplicacion
 if [ -f "./Frontend/package.json" ]; then
@@ -60,11 +60,11 @@ fi
 
 #Iniciar el contenedor
 print_message $YELLOW "Iniciando contenedores..."
-docker compose up -d
+sudo docker compose -f docker-compose.prod.yml up -d
 
 # Listar el contenedor
 print_message $YELLOW "Listando contenedores..."
-docker ps -a
+sudo docker ps -a
 
 ###probar la aplicacion
 print_message $YELLOW "Probando la aplicación..."
